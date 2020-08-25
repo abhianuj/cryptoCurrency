@@ -1,12 +1,26 @@
 package com.crypto.demo.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "CRYPTO")
 public class CryptoModel {
+	@Id
+	@Column
 	private Integer id;
+	@Column
 	private String name;
+	@Column
 	private Integer value;
+	@Column
 	private String currency;
 	
-	
+	public CryptoModel() {
+		
+	}
 	
 	public CryptoModel(Integer id, String name, Integer value, String currency) {
 		super();
