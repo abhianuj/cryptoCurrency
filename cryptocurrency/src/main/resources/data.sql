@@ -1,0 +1,1 @@
+INSERT INTO CRYPTO (name,value,currency) VALUES ('Bitcoin', 110001,'USD');  
