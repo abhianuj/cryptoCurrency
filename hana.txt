@@ -1,0 +1,99 @@
+INSERT INTO vehicleData(IDNO, TYPEOFVEHICLE,WHEELS,HORSEPOWER)
+VALUES (5,'BIKE',2,100);
+
+select sqrt(49) as "SQRT" from dummy
+
+select avg(horsepower) from vehicleData;
+
+select count(wheels) from vehicleData where horsepower>=500;
+
+create schema "anuj";
+
+-- IN is optional in the parameter
+create function "anuj"."add_num" (IN a Integer, IN b Integer)
+returns result_ Integer
+language sqlscript
+as
+begin
+result_ := :a + :b;
+end;
+
+select "anuj"."add_num"(40,60) from dummy;
+
+-- fuzzy (used for smart searching) the value can be from 0 to 1 higher the value more accurate will be the answers.
+select * from vehicleData where contains (typeofvehicle,'car', fuzzy(0.7));
+
+select SCORE() AS score, * from vehicleData where contains (typeofvehicle,'car', fuzzy(0.7));
+
+
+
+
+
+-- inserting json data for easy column fil while making tables
+CREATE TABLE COMMUNITY (DATA VARCHAR(400));
+
+insert into "COMMUNITY" (DATA)  values('{"name" : "Sol" , "hint" :"I love using SAP HANA to develop applications", "learns_from" :"Sam", "office" :"Toronto", "tenure" :17, "geolocation" : "Point( -79.380186 43.647944 )" }');
+insert into "COMMUNITY" (DATA) values('{"name" :"Sam", "hint" :"I like developing in different languages and SQLScript", "learns_from" :"Sol", "office" :"Walldorf", "tenure" :3, "geolocation" : "Point( 8.636789 49.29487 )" }');
+
+SELECT *
+	FROM JSON_TABLE(COMMUNITY.DATA, '$'
+	COLUMNS
+    (
+        LOCATION NVARCHAR(200) PATH '$.office',
+        NAME NVARCHAR(200) PATH '$.name'
+    )
+	) AS JT where NAME = 'Maria'
+	
+
+
+
+-- prodecures 
+create schema "vacation";
+create function "vacation"."Remainderdays_value" (IN remainingVdays Integer)
+returns cost Integer
+language sqlscript
+as
+begin
+cost := :remainingVdays*30;
+end;
+
+select "vacation"."Remainderdays_value"(20) from dummy;
+
+create function "vacation"."Remainderdays__value" (IN remainingVdays Integer, IN department VARCHAR(20))
+returns cost Integer
+language sqlscript
+as
+begin
+IF :department = 'A01' THEN
+	cost := remainingVdays*350;
+ELSEIF :department = 'A02' THEN
+	cost := remainingVdays*310;
+ELSEIF :department = 'A03' THEN
+	cost := remainingVdays*290;
+ELSEIF :department = 'A04' THEN
+	cost := remainingVdays*325;
+ELSE
+	cost := remainingVdays*300;	
+END IF;
+END;
+
+select "vacation"."Remainderdays__value"(10,'A02') from dummy;
+
+
+create procedure "myProcedure" (IN num Integer)
+	language sqlscript
+	reads sql data as --the procedure is read only no update, delete or insert is possible
+	begin
+		select sqrt(num) from dummy;
+	end;
+
+-- to alter the procedure already created above
+alter  procedure "myProcedure" (num1 Integer)
+	language sqlscript
+	as --the procedure have all update, delete or insert is possible
+	begin
+		select max(num1) from dummy;
+	end;
+	
+call "myProcedure"(10);
+
